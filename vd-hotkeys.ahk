@@ -8,8 +8,9 @@
 ;   Win+Ctrl+Shift+Left / Right       neighbouring desktop (right of the last one creates a new desktop)
 ;   Win+Ctrl+Shift+1 … 9              desktop N (missing desktops are created)
 ; Go to a desktop (the window stays):
-;   Ctrl+Shift+Alt+Win+Left / Right   neighbouring desktop (same as the built-in Win+Ctrl+Left / Right)
-;   Ctrl+Shift+Alt+Win+1 … 9          desktop N
+;   Win+Ctrl+Alt+Left / Right         neighbouring desktop (same as the built-in Win+Ctrl+Left / Right)
+;   Win+Ctrl+Alt+1 … 9                desktop N
+; Win+Ctrl is the base, as in the built-in desktop switching; Shift takes the window along, Alt just goes.
 ; Win+Ctrl+1 … 9 is left alone: Windows uses it to switch to the N-th taskbar app.
 ;
 ; Needs lib\VirtualDesktopAccessor.dll (github.com/Ciantic/VirtualDesktopAccessor) built for your Windows:
@@ -33,19 +34,19 @@ procGoTo    := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GoToDesktopNumber
 procMove    := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "MoveWindowToDesktopNumber", "Ptr")
 procCreate  := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "CreateDesktop", "Ptr")
 
-A_IconTip := T("Окно на стол: Win+Ctrl+Shift + ← / → / 1…9`nПерейти: Ctrl+Shift+Alt+Win + ← / → / 1…9",
-    "Move window: Win+Ctrl+Shift + ← / → / 1…9`nGo to desktop: Ctrl+Shift+Alt+Win + ← / → / 1…9")
+A_IconTip := T("Окно на стол: Win+Ctrl+Shift + ← / → / 1…9`nПерейти: Win+Ctrl+Alt + ← / → / 1…9",
+    "Move window: Win+Ctrl+Shift + ← / → / 1…9`nGo to desktop: Win+Ctrl+Alt + ← / → / 1…9")
 
 ; After an Explorer restart the DLL still holds the old shell objects — reload once the new taskbar is up.
 OnMessage(DllCall("RegisterWindowMessage", "Str", "TaskbarCreated", "UInt"), OnTaskbarCreated)
 
 #^+Left:: MoveActiveTo(DllCall(procCurrent, "Int") - 1)
 #^+Right:: MoveActiveTo(DllCall(procCurrent, "Int") + 1)
-#^+!Left:: GoToDesktop(DllCall(procCurrent, "Int") - 1)
-#^+!Right:: GoToDesktop(DllCall(procCurrent, "Int") + 1, T("Правее столов нет", "No desktop to the right"))
+#^!Left:: GoToDesktop(DllCall(procCurrent, "Int") - 1)
+#^!Right:: GoToDesktop(DllCall(procCurrent, "Int") + 1, T("Правее столов нет", "No desktop to the right"))
 Loop 9 {
     Hotkey("#^+" A_Index, MoveToNumber.Bind(A_Index - 1))
-    Hotkey("#^+!" A_Index, GoToNumber.Bind(A_Index - 1))
+    Hotkey("#^!" A_Index, GoToNumber.Bind(A_Index - 1))
 }
 WriteLog("start admin=" A_IsAdmin " desktops=" DllCall(procCount, "Int") " current=" DllCall(procCurrent, "Int"))
 
@@ -58,7 +59,7 @@ MoveToNumber(target, *) {
 }
 
 /**
- * Ctrl+Shift+Alt+Win+digit handler.
+ * Win+Ctrl+Alt+digit handler.
  * @param target zero-based desktop number
  */
 GoToNumber(target, *) {

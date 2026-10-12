@@ -24,10 +24,12 @@
 
 | Клавиши | Действие |
 |---|---|
-| **Ctrl + Shift + Alt + Win + ←** / **→** | на соседний стол — то же, что встроенное Win + Ctrl + ← / → |
-| **Ctrl + Shift + Alt + Win + 1 … 9** | на стол с этим номером (несуществующие не создаются) |
+| **Win + Ctrl + Alt + ←** / **→** | на соседний стол — то же, что встроенное Win + Ctrl + ← / → |
+| **Win + Ctrl + Alt + 1 … 9** | на стол с этим номером (несуществующие не создаются) |
 
-Win + Ctrl + 1 … 9 не занято специально: в Windows это переключение на N-ю программу панели задач.
+Основа у всех сочетаний — Win + Ctrl, как у встроенного переключения столов: **Shift** — взять окно с собой,
+**Alt** — просто перейти. Win + Ctrl + 1 … 9 не занято специально: в Windows это переключение на N-ю
+программу панели задач.
 
 ### Установка
 
@@ -105,10 +107,11 @@ for a second.
 
 | Keys | Action |
 |---|---|
-| **Ctrl + Shift + Alt + Win + ←** / **→** | to the neighbouring desktop — same as the built-in Win + Ctrl + ← / → |
-| **Ctrl + Shift + Alt + Win + 1 … 9** | to desktop N (missing desktops are not created) |
+| **Win + Ctrl + Alt + ←** / **→** | to the neighbouring desktop — same as the built-in Win + Ctrl + ← / → |
+| **Win + Ctrl + Alt + 1 … 9** | to desktop N (missing desktops are not created) |
 
-Win + Ctrl + 1 … 9 is left alone on purpose: Windows uses it to switch to the N-th taskbar app.
+Every chord is built on Win + Ctrl, like the built-in desktop switching: **Shift** takes the window along,
+**Alt** just goes. Win + Ctrl + 1 … 9 is left alone on purpose: Windows uses it to switch to the N-th taskbar app.
 
 ### Install
 
