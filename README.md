@@ -8,16 +8,26 @@
 «Представления задач» (Win+Tab).
 
 В Windows 11 нет горячей клавиши «перенести окно на другой стол»: это делается только через Win+Tab →
-правый клик по окну → «Переместить в». Если Представление задач у вас падает или просто неудобно —
-этот скрипт решает задачу одной комбинацией.
+правый клик по окну → «Переместить в». Перейти сразу на стол с нужным номером тоже нельзя — только
+листать соседние Win + Ctrl + ← / →. Этот скрипт добавляет и то и другое.
+
+**Перенести активное окно**
 
 | Клавиши | Действие |
 |---|---|
-| **Win + Ctrl + Shift + ←** / **→** | окно на соседний стол (правее последнего — создаётся новый) |
-| **Win + Ctrl + Shift + 1 … 9** | окно на стол с этим номером (недостающие столы создаются) |
+| **Win + Ctrl + Shift + ←** / **→** | на соседний стол (правее последнего — создаётся новый) |
+| **Win + Ctrl + Shift + 1 … 9** | на стол с этим номером (недостающие столы создаются) |
 
 По умолчанию вы переходите на стол вместе с окном, внизу на секунду появляется «Окно → стол N».
-Переключение без переноса — как обычно, Win + Ctrl + ← / →.
+
+**Перейти на стол** (окна остаются на месте)
+
+| Клавиши | Действие |
+|---|---|
+| **Ctrl + Shift + Alt + Win + ←** / **→** | на соседний стол — то же, что встроенное Win + Ctrl + ← / → |
+| **Ctrl + Shift + Alt + Win + 1 … 9** | на стол с этим номером (несуществующие не создаются) |
+
+Win + Ctrl + 1 … 9 не занято специально: в Windows это переключение на N-ю программу панели задач.
 
 ### Установка
 
@@ -78,15 +88,27 @@ powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
 Hotkeys that move the active window between Windows 11 virtual desktops — no Task View (Win+Tab) needed.
 
 Windows 11 has no shortcut for "move window to another desktop": the only way is Win+Tab → right-click a
-window → "Move to". If Task View crashes on your machine or is just slow to use, this does it with one chord.
+window → "Move to". Nor can you jump straight to desktop N — only step through neighbours with
+Win + Ctrl + ← / →. This script adds both.
+
+**Move the active window**
 
 | Keys | Action |
 |---|---|
-| **Win + Ctrl + Shift + ←** / **→** | move to the neighbouring desktop (right of the last one creates a new desktop) |
-| **Win + Ctrl + Shift + 1 … 9** | move to desktop N (missing desktops are created) |
+| **Win + Ctrl + Shift + ←** / **→** | to the neighbouring desktop (right of the last one creates a new desktop) |
+| **Win + Ctrl + Shift + 1 … 9** | to desktop N (missing desktops are created) |
 
 By default you switch to the target desktop together with the window and a "Window → desktop N" tooltip shows
-for a second. Switching without moving stays the built-in Win + Ctrl + ← / →.
+for a second.
+
+**Go to a desktop** (windows stay where they are)
+
+| Keys | Action |
+|---|---|
+| **Ctrl + Shift + Alt + Win + ←** / **→** | to the neighbouring desktop — same as the built-in Win + Ctrl + ← / → |
+| **Ctrl + Shift + Alt + Win + 1 … 9** | to desktop N (missing desktops are not created) |
+
+Win + Ctrl + 1 … 9 is left alone on purpose: Windows uses it to switch to the N-th taskbar app.
 
 ### Install
 

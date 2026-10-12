@@ -117,7 +117,7 @@ if ($isAdmin) {
     $settings  = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero) -AllowStartIfOnBatteries `
         -DontStopIfGoingOnBatteries -MultipleInstances IgnoreNew
     Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings `
-        -Description 'vd-hotkeys: Win+Ctrl+Shift+Left/Right/1-9 moves the active window to another virtual desktop' -Force | Out-Null
+        -Description 'vd-hotkeys: Win+Ctrl+Shift+Left/Right/1-9 moves the active window, Ctrl+Shift+Alt+Win+Left/Right/1-9 goes to a virtual desktop' -Force | Out-Null
     if (Test-Path $startupLnk) { Remove-Item $startupLnk -Force }
     Start-ScheduledTask -TaskName $TaskName
     Write-Host "Autostart: scheduled task '$TaskName' (at logon, highest privileges)"
@@ -133,4 +133,5 @@ if ($isAdmin) {
 }
 
 Write-Host "Installed to $InstallDir"
-Write-Host 'Hotkeys: Win+Ctrl+Shift+Left/Right - neighbouring desktop, Win+Ctrl+Shift+1..9 - desktop N'
+Write-Host 'Move window:   Win+Ctrl+Shift + Left/Right/1..9'
+Write-Host 'Go to desktop: Ctrl+Shift+Alt+Win + Left/Right/1..9'

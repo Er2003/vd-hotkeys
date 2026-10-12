@@ -4,8 +4,13 @@
 ; vd-hotkeys — move the active window between Windows 11 virtual desktops with hotkeys,
 ; no Task View (Win+Tab) needed.
 ;
-;   Win+Ctrl+Shift+Left / Right   neighbouring desktop (right of the last one creates a new desktop)
-;   Win+Ctrl+Shift+1 … 9          desktop N (missing desktops are created)
+; Move the active window:
+;   Win+Ctrl+Shift+Left / Right       neighbouring desktop (right of the last one creates a new desktop)
+;   Win+Ctrl+Shift+1 … 9              desktop N (missing desktops are created)
+; Go to a desktop (the window stays):
+;   Ctrl+Shift+Alt+Win+Left / Right   neighbouring desktop (same as the built-in Win+Ctrl+Left / Right)
+;   Ctrl+Shift+Alt+Win+1 … 9          desktop N
+; Win+Ctrl+1 … 9 is left alone: Windows uses it to switch to the N-th taskbar app.
 ;
 ; Needs lib\VirtualDesktopAccessor.dll (github.com/Ciantic/VirtualDesktopAccessor) built for your Windows:
 ; 22H2/23H2 (22621/22631) — release 2024-01-25-windows11, 24H2+ (26100.2605+) — 2024-12-16-windows11.
@@ -28,15 +33,20 @@ procGoTo    := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "GoToDesktopNumber
 procMove    := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "MoveWindowToDesktopNumber", "Ptr")
 procCreate  := DllCall("GetProcAddress", "Ptr", hVDA, "AStr", "CreateDesktop", "Ptr")
 
-A_IconTip := T("Перенос окон между столами", "Move windows between desktops") "`nWin+Ctrl+Shift + ← / → / 1…9"
+A_IconTip := T("Окно на стол: Win+Ctrl+Shift + ← / → / 1…9`nПерейти: Ctrl+Shift+Alt+Win + ← / → / 1…9",
+    "Move window: Win+Ctrl+Shift + ← / → / 1…9`nGo to desktop: Ctrl+Shift+Alt+Win + ← / → / 1…9")
 
 ; After an Explorer restart the DLL still holds the old shell objects — reload once the new taskbar is up.
 OnMessage(DllCall("RegisterWindowMessage", "Str", "TaskbarCreated", "UInt"), OnTaskbarCreated)
 
 #^+Left:: MoveActiveTo(DllCall(procCurrent, "Int") - 1)
 #^+Right:: MoveActiveTo(DllCall(procCurrent, "Int") + 1)
-Loop 9
+#^+!Left:: GoToDesktop(DllCall(procCurrent, "Int") - 1)
+#^+!Right:: GoToDesktop(DllCall(procCurrent, "Int") + 1, T("Правее столов нет", "No desktop to the right"))
+Loop 9 {
     Hotkey("#^+" A_Index, MoveToNumber.Bind(A_Index - 1))
+    Hotkey("#^+!" A_Index, GoToNumber.Bind(A_Index - 1))
+}
 WriteLog("start admin=" A_IsAdmin " desktops=" DllCall(procCount, "Int") " current=" DllCall(procCurrent, "Int"))
 
 /**
@@ -45,6 +55,35 @@ WriteLog("start admin=" A_IsAdmin " desktops=" DllCall(procCount, "Int") " curre
  */
 MoveToNumber(target, *) {
     MoveActiveTo(target)
+}
+
+/**
+ * Ctrl+Shift+Alt+Win+digit handler.
+ * @param target zero-based desktop number
+ */
+GoToNumber(target, *) {
+    GoToDesktop(target)
+}
+
+/**
+ * Switches to desktop `target` (zero-based) without moving windows; missing desktops are not created.
+ * @param target    zero-based desktop number
+ * @param noneRight message when there is no such desktop (default: "no desktop N")
+ */
+GoToDesktop(target, noneRight := "") {
+    count := DllCall(procCount, "Int")
+    WriteLog("hotkey=" A_ThisHotkey " goto=" target " count=" count)
+    if target < 0 {
+        Notify(T("Левее столов нет", "No desktop to the left"))
+        return
+    }
+    if target >= count {
+        Notify(noneRight != "" ? noneRight
+            : T("Стола " (target + 1) " нет, всего " count, "No desktop " (target + 1) ", there are " count))
+        return
+    }
+    DllCall(procGoTo, "Int", target, "Int")
+    Notify(T("Стол ", "Desktop ") (target + 1))
 }
 
 /**
